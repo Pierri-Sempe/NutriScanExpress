@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultado - NutriScan Express</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; margin: 20px; }
+        img { max-width: 300px; border-radius: 8px; margin-top: 10px; }
+        .button { display: inline-block; padding: 10px 15px; margin: 10px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
+        .button:hover { background: #45a049; }
+        .card { border: 1px solid #ccc; padding: 20px; border-radius: 8px; display: inline-block; max-width: 500px; background: #f9f9f9; }
+    </style>
+</head>
+<body>
+    <h1>🥗 Resultado del análisis</h1>
+        <div class="card" style="text-align: center; max-width: 500px; margin: auto;">
+            <h2>{{ alimento }}</h2>
+            <img src="{{ url_for('static', filename=imagen.split('static/')[-1]) }}" alt="{{ alimento }}">
+            <div style="text-align: left; margin-top: 15px;">
+                {{ info | safe }}
+            </div>
+            <p><strong>Analizado por:</strong> {{ usuario }}</p>
+        </div>
+    <br>
+    <a href="/" class="button">🔄 Analizar otro alimento</a>
+    <a href="/history" class="button">📜 Ver historial</a>
+</body>
+</html>

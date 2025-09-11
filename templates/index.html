@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>NutriScan Express</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="centered">
+    <h1>🥗 NutriScan Express</h1>
+    <form id="formulario" method="POST" action="/upload" enctype="multipart/form-data">
+        <input type="text" name="usuario" placeholder="Tu nombre" required><br><br>
+        <input type="file" name="imagen" accept="image/*" required><br><br>
+        <button type="submit" class="button">Analizar alimento</button>
+    </form>
+    <div id="resultado"></div>
+    <a href="/history" class="button top-right">Ver historial</a>
+
+<script>
+    const form = document.getElementById("formulario");
+    form.addEventListener("submit", async e => {
+        e.preventDefault();
+        const data = new FormData(form);
+        const res = await fetch("/upload", { method: "POST", body: data });
+        const result = await res.json();
+
+        if (result.error) {
+            document.getElementById("resultado").innerHTML = `<p style="color:red;">${result.error}</p>`;
+            return;
+        }
+
+        document.getElementById("resultado").innerHTML = 
+            `<h2>🍎 ${result.alimento}</h2>
+             <p>${result.info}</p>
+             <img src="${result.imagen}" alt="${result.alimento}" style="max-width:300px;">`;
+    });
+</script>
+
+</body>
+</html>
+

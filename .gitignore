@@ -1,0 +1,20 @@
+# Archivos sensibles
+.env
+clave_google.json
+
+# Archivos de sistema
+__pycache__/
+*.pyc
+
+# Archivos de entorno virtual
+venv/
+env/
+
+# Archivos temporales
+*.log
+*.sqlite3
+.DS_Store
+Thumbs.db
+
+# Archivos de subidas 
+static/uploads/

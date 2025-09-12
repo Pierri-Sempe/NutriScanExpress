@@ -29,11 +29,11 @@
         <tr>
             <td>{{ item.usuario }}</td>
             <td>{{ item.alimento }}</td>
-            <td>{{ item.info }}</td>
+            <td><a href="/ficha/{{ item.id }}" target="_blank">Ver ficha</a></td>
             <td>{{ item.fecha }}</td>
             <td>
                 {% if item.imagen %}
-                    <img src="{{ url_for('static', filename=item.imagen.split('static/')[-1]) }}" alt="{{ item.alimento }}">
+                    <img src="{{ url_for('static', filename=item.imagen.split('static/')[-1]) }}" alt="{{ item.alimento }}" style="max-width: 100px;">
                 {% else %}
                     Sin imagen
                 {% endif %}

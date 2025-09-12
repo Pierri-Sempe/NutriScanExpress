@@ -15,9 +15,17 @@ app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Inicializar clientes
+
 client_openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'clave_google.json'
+
+google_credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+if google_credentials_path:
+    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_credentials_path
+else:
+    raise EnvironmentError("La variable GOOGLE_APPLICATION_CREDENTIALS no está definida en el entorno.")
+
 client_vision = vision.ImageAnnotatorClient()
+
 
 HISTORIAL_FILE = 'historial.json'
 ALLOWED_EXTENSIONS = {'.png', '.jpg', '.jpeg'}
@@ -25,9 +33,23 @@ ALLOWED_EXTENSIONS = {'.png', '.jpg', '.jpeg'}
 def allowed_file(filename):
     return os.path.splitext(filename.lower())[1] in ALLOWED_EXTENSIONS
 
+def detectar_alimento(imagen_path):
+    try:
+        with open(imagen_path, 'rb') as img_file:
+            content = img_file.read()
+        image = vision.Image(content=content)
+        response = client_vision.label_detection(image=image)
+        etiquetas = [label.description for label in response.label_annotations]
+        ignorar = {"Food", "Dish", "Cuisine", "Ingredient", "Recipe"}
+        etiquetas_filtradas = [e for e in etiquetas if e not in ignorar]
+        return etiquetas_filtradas[0] if etiquetas_filtradas else etiquetas[0]
+    except Exception as e:
+        return f"Error: {e}"
+
 def guardar_registro(usuario, alimento, info, imagen_rel_path):
     fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     nuevo = {
+        'id': datetime.now().strftime('%Y%m%d%H%M%S'),
         'usuario': usuario,
         'alimento': alimento,
         'info': info,
@@ -45,24 +67,36 @@ def guardar_registro(usuario, alimento, info, imagen_rel_path):
 
 def generar_ficha(alimento):
     prompt = f"""
-    Genera una ficha nutricional breve y clara sobre {alimento} en formato Markdown.
-    Debe incluir exactamente estos apartados, usando ** para negritas:
-    - **Alimento:** nombre del alimento
-    - **Calorías (por 100g):** valor aproximado
-    - **Nutrientes destacados:** lista breve
-    - **Beneficios:** lista breve
-    - **Dato curioso:** 1 frase interesante
+    Actúa como un nutricionista profesional especializado en divulgación educativa. Tu tarea es generar una ficha nutricional breve y clara sobre el alimento "{alimento}" en formato Markdown, destinada a usuarios curiosos que desean aprender sobre nutrición de forma accesible.
 
-    El texto debe ser conciso, educativo y fácil de leer.
+    Antes de comenzar, determina si el alimento es un platillo compuesto (por ejemplo: ensalada, hamburguesa, pasta, etc.).  
+    Si lo es, incluye una lista estimada de ingredientes comunes que lo componen. Si no lo es, omite esta sección.
+
+    La ficha debe incluir los siguientes apartados, usando ** para negritas:
+
+    - **Alimento:** nombre común del alimento  
+    - **Ingredientes estimados:** (solo si es un platillo) lista breve de componentes típicos  
+    - **Calorías (por 100g):** valor aproximado según preparación estándar  
+    - **Nutrientes destacados:** lista breve con 3 a 5 componentes clave  
+    - **Beneficios para la salud:** 2 a 3 beneficios concretos y comprensibles  
+    - **Dato curioso:** una frase interesante o cultural sobre el alimento  
+
+    Requisitos adicionales:  
+    - Usa lenguaje claro, sin tecnicismos excesivos.  
+    - Evita repetir el nombre del alimento en cada sección.  
+    - No incluyas advertencias ni contraindicaciones.  
+    - Organiza el contenido en párrafos breves.  
+    - No uses encabezados ni listas con guiones.  
+    - Mantén el texto dentro de 150 palabras.
     """
     try:
         response = client_openai.chat.completions.create(
             model='gpt-3.5-turbo',
             messages=[
-                {'role': 'system', 'content': 'Eres un experto en nutrición y presentas la información de forma clara y atractiva.'},
+                {'role': 'system', 'content': 'Eres un experto en nutrición con enfoque educativo.'},
                 {'role': 'user', 'content': prompt}
             ],
-            max_tokens=250
+            max_tokens=350
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
@@ -87,17 +121,7 @@ def upload():
     imagen_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     imagen.save(imagen_path)
 
-    try:
-        with open(imagen_path, 'rb') as img_file:
-            content = img_file.read()
-        image = vision.Image(content=content)
-        response = client_vision.label_detection(image=image)
-        if not response.label_annotations:
-            return jsonify({'error': 'No se detectó ningún alimento.'}), 404
-        alimento = response.label_annotations[0].description
-    except Exception as e:
-        return jsonify({'error': f'Error con Google Vision: {e}'}), 500
-
+    alimento = detectar_alimento(imagen_path)
     ficha_raw = generar_ficha(alimento)
     ficha_html = markdown.markdown(ficha_raw)
     imagen_rel_path = os.path.join('static', 'uploads', filename)
@@ -110,9 +134,31 @@ def history():
     try:
         with open(HISTORIAL_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
+        for item in data:
+            item['info'] = markdown.markdown(item['info'])
     except FileNotFoundError:
         data = []
     return render_template('history.html', historial=data)
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+@app.route('/ficha/<id>')
+def ficha(id):
+    try:
+        with open(HISTORIAL_FILE, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+        item = next((x for x in data if x.get('id') == id), None)
+        if item:
+            ficha_html = markdown.markdown(item['info'])
+            return render_template('ficha.html',
+                                   usuario=item['usuario'],
+                                   alimento=item['alimento'],
+                                   info=ficha_html,
+                                   imagen=item['imagen'],
+                                   fecha=item['fecha'])
+        else:
+            return "Ficha no encontrada", 404
+    except Exception as e:
+        return f"Error: {e}", 500
+

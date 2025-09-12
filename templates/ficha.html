@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha Nutricional</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; max-width: 800px; }
+        .container { border: 1px solid #ccc; padding: 20px; border-radius: 8px; background: #f9f9f9; }
+        h1 { color: #4CAF50; }
+        .meta { font-size: 0.9em; color: #555; margin-bottom: 10px; }
+        img { max-width: 300px; margin-top: 15px; border-radius: 8px; }
+        .button { display: inline-block; padding: 10px 15px; margin-top: 20px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
+        .button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🥗 Ficha Nutricional</h1>
+        <div class="meta">
+            <strong>Usuario:</strong> {{ usuario }}<br>
+            <strong>Fecha:</strong> {{ fecha }}
+        </div>
+        <h2>{{ alimento }}</h2>
+        <div>{{ info | safe }}</div>
+        {% if imagen %}
+            <img src="{{ url_for('static', filename=imagen.split('static/')[-1]) }}" alt="Imagen del alimento">
+        {% endif %}
+        <br>
+        <a href="/history" class="button">⬅ Volver al historial</a>
+    </div>
+</body>
+</html>

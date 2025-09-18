@@ -2,6 +2,7 @@ import os
 import json
 from datetime import datetime
 from flask import Flask, request, render_template, jsonify
+from flask import send_from_directory
 from openai import OpenAI
 from google.cloud import vision
 from dotenv import load_dotenv
@@ -13,6 +14,9 @@ load_dotenv()
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = os.path.join('static', 'uploads')
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
+
+FICHAS_FOLDER = 'fichas'
+os.makedirs(FICHAS_FOLDER, exist_ok=True)
 
 # Inicializar clientes
 
@@ -39,42 +43,67 @@ def detectar_alimento(imagen_path):
             content = img_file.read()
         image = vision.Image(content=content)
         response = client_vision.label_detection(image=image)
-        etiquetas = [label.description for label in response.label_annotations]
-        ignorar = {"Food", "Dish", "Cuisine", "Ingredient", "Recipe"}
-        etiquetas_filtradas = [e for e in etiquetas if e not in ignorar]
-        return etiquetas_filtradas[0] if etiquetas_filtradas else etiquetas[0]
+        etiquetas = response.label_annotations
+
+        # Verifica si hay etiquetas relevantes con alta confianza
+        etiquetas_validas = [label for label in etiquetas if label.description in {"Food", "Fruit"} and label.score >= 0.80]
+
+        if not etiquetas_validas:
+            return None  # No se detectó alimento válido
+
+        # Filtra etiquetas genéricas
+        ignorar = {"Food", "Dish", "Cuisine", "Ingredient", "Recipe", "Produce"}
+        etiquetas_filtradas = [label.description for label in etiquetas if label.description not in ignorar]
+
+        return etiquetas_filtradas[0] if etiquetas_filtradas else etiquetas[0].description
     except Exception as e:
         return f"Error: {e}"
 
+
 def guardar_registro(usuario, alimento, info, imagen_rel_path):
     fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    ficha_id = datetime.now().strftime('%Y%m%d%H%M%S')
+    ficha_filename = f"ficha_{ficha_id}.txt"
+    ficha_path = os.path.join(FICHAS_FOLDER, ficha_filename)
+
+    with open(ficha_path, 'w', encoding='utf-8') as f:
+        f.write(info)
+
     nuevo = {
-        'id': datetime.now().strftime('%Y%m%d%H%M%S'),
+        'id': ficha_id,
         'usuario': usuario,
         'alimento': alimento,
-        'info': info,
+        'ficha_file': ficha_filename,
         'fecha': fecha,
         'imagen': imagen_rel_path
     }
+
     try:
         with open(HISTORIAL_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
     except FileNotFoundError:
         data = []
+
     data.append(nuevo)
     with open(HISTORIAL_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
+    return ficha_filename  # ✅ Retorna el nombre del archivo
+
 def generar_ficha(alimento):
     prompt = f"""
-    Actúa como un nutricionista profesional especializado en divulgación educativa. Tu tarea es generar una ficha nutricional breve y clara sobre el alimento "{alimento}" en formato Markdown, destinada a usuarios curiosos que desean aprender sobre nutrición de forma accesible.
+    Actúa como un nutricionista profesional especializado en divulgación educativa. 
+    Tu tarea es generar una ficha nutricional breve y clara sobre el alimento "{alimento}" en formato Markdown, destinada a usuarios curiosos que desean aprender sobre nutrición de forma accesible.
 
     Antes de comenzar, determina si el alimento es un platillo compuesto (por ejemplo: ensalada, hamburguesa, pasta, etc.).  
     Si lo es, incluye una lista estimada de ingredientes comunes que lo componen. Si no lo es, omite esta sección.
 
+    Si detectas que el alimento esta en muy mal estado, deci si es o no es recomendable ingerir ese mismo alimento.
+    
     La ficha debe incluir los siguientes apartados, usando ** para negritas:
 
     - **Alimento:** nombre común del alimento  
+    - **Estado:** estado del alimento
     - **Ingredientes estimados:** (solo si es un platillo) lista breve de componentes típicos  
     - **Calorías (por 100g):** valor aproximado según preparación estándar  
     - **Nutrientes destacados:** lista breve con 3 a 5 componentes clave  
@@ -125,40 +154,43 @@ def upload():
     ficha_raw = generar_ficha(alimento)
     ficha_html = markdown.markdown(ficha_raw)
     imagen_rel_path = os.path.join('static', 'uploads', filename)
-    guardar_registro(usuario, alimento, ficha_raw, imagen_rel_path)
+    ficha_filename = guardar_registro(usuario, alimento, ficha_raw, imagen_rel_path)
 
-    return render_template('result.html', usuario=usuario, alimento=alimento, info=ficha_html, imagen=imagen_rel_path)
+    return render_template('result.html',
+                       usuario=usuario,
+                       alimento=alimento,
+                       info=ficha_html,
+                       imagen=imagen_rel_path,
+                       ficha_file=ficha_filename)
+
 
 @app.route('/history')
 def history():
     try:
         with open(HISTORIAL_FILE, 'r', encoding='utf-8') as f:
             data = json.load(f)
+
         for item in data:
-            item['info'] = markdown.markdown(item['info'])
+            ficha_path = os.path.join(FICHAS_FOLDER, item['ficha_file'])
+            if os.path.exists(ficha_path):
+                with open(ficha_path, 'r', encoding='utf-8') as f_txt:
+                    ficha_raw = f_txt.read()
+                item['info'] = markdown.markdown(ficha_raw)
+            else:
+                item['info'] = "<p><em>Ficha no disponible</em></p>"
+
     except FileNotFoundError:
         data = []
+
     return render_template('history.html', historial=data)
+
+@app.route('/descargar/<filename>')
+def descargar_ficha(filename):
+    try:
+        return send_from_directory(FICHAS_FOLDER, filename, as_attachment=True)
+    except FileNotFoundError:
+        return "Archivo no encontrado", 404
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-@app.route('/ficha/<id>')
-def ficha(id):
-    try:
-        with open(HISTORIAL_FILE, 'r', encoding='utf-8') as f:
-            data = json.load(f)
-        item = next((x for x in data if x.get('id') == id), None)
-        if item:
-            ficha_html = markdown.markdown(item['info'])
-            return render_template('ficha.html',
-                                   usuario=item['usuario'],
-                                   alimento=item['alimento'],
-                                   info=ficha_html,
-                                   imagen=item['imagen'],
-                                   fecha=item['fecha'])
-        else:
-            return "Ficha no encontrada", 404
-    except Exception as e:
-        return f"Error: {e}", 500
 

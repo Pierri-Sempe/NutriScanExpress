@@ -1,46 +1,108 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <title>Historial NutriScan</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        table { border-collapse: collapse; width: 100%; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        th { background-color: #4CAF50; color: white; }
-        tr:nth-child(even) { background-color: #f2f2f2; }
-        img { max-width: 80px; border-radius: 5px; }
-        .button { display: inline-block; padding: 10px 15px; margin-top: 15px; background: #4CAF50; color: white; text-decoration: none; border-radius: 5px; }
-        .button:hover { background: #45a049; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Historial NutriScan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #e0f2f1;
+      color: #004d40;
+    }
+    header {
+      background-color: #00796b;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+    main {
+      padding: 2rem;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin-top: 20px;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    th, td {
+      border: 1px solid #ddd;
+      padding: 12px;
+      text-align: center;
+    }
+    th {
+      background-color: #00796b;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+    img {
+      max-width: 80px;
+      border-radius: 5px;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      margin-top: 20px;
+      background: #00796b;
+      color: white;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background 0.3s;
+    }
+    .button:hover {
+      background: #004d40;
+    }
+    footer {
+      margin-top: 3rem;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #00695c;
+      padding-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
+  <header>
     <h1>📜 Historial de análisis</h1>
+  </header>
+  <main>
     <table>
-        <tr>
-            <th>Usuario</th>
-            <th>Alimento</th>
-            <th>Ficha</th>
-            <th>Fecha</th>
-            <th>Imagen</th>
-        </tr>
-        {% for item in historial %}
-        <tr>
-            <td>{{ item.usuario }}</td>
-            <td>{{ item.alimento }}</td>
-            <td><a href="/ficha/{{ item.id }}" target="_blank">Ver ficha</a></td>
-            <td>{{ item.fecha }}</td>
-            <td>
-                {% if item.imagen %}
-                    <img src="{{ url_for('static', filename=item.imagen.split('static/')[-1]) }}" alt="{{ item.alimento }}" style="max-width: 100px;">
-                {% else %}
-                    Sin imagen
-                {% endif %}
-            </td>
-        </tr>
-        {% endfor %}
+      <tr>
+        <th>Usuario</th>
+        <th>Alimento</th>
+        <th>Ficha</th>
+        <th>Fecha</th>
+        <th>Imagen</th>
+      </tr>
+      {% for item in historial %}
+      <tr>
+        <td>{{ item.usuario }}</td>
+        <td>{{ item.alimento }}</td>
+        <td><a href="/descargar/ficha_{{ item.id }}.txt" download>Descargar ficha</a></td>
+        <td>{{ item.fecha }}</td>
+        <td>
+          {% if item.imagen %}
+            <img src="{{ url_for('static', filename=item.imagen.split('static/')[-1]) }}" alt="{{ item.alimento }}">
+          {% else %}
+            Sin imagen
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
     </table>
     <a href="/" class="button">⬅ Volver</a>
+  </main>
+  <footer>
+    &copy; 2025 NutriScan Express
+  </footer>
 </body>
 </html>

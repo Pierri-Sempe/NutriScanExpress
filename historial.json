@@ -1,38 +1,194 @@
 [
     {
-        "usuario": "Hans",
-        "alimento": "Food",
-        "info": "**Ficha Nutricional**\n\n- **Alimento:** Food\n- **Calorías:** Depende de la preparación y los ingredientes utilizados, pero en promedio 100 gramos de Food aportan alrededor de 200 calorías.\n- **Nutrientes destacados:** Proteínas de alta calidad, vitaminas del grupo B, hierro, zinc y ácidos grasos esenciales.\n- **Beneficios:** Ayuda a mantener la saciedad, favorece el crecimiento y reparación de tejidos, contribuye a la",
-        "fecha": "2025-09-09 12:20:56",
-        "imagen": "static\\uploads\\20250909122049_manzana.jpg"
+        "id": "20250912013221",
+        "usuario": "Edrian",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250912013221.txt",
+        "fecha": "2025-09-12 01:32:21",
+        "imagen": "static\\uploads\\20250912013216_manzana.jpg"
     },
     {
-        "usuario": "Pierri",
-        "alimento": "Food",
-        "info": "### Ficha Nutricional\n\n- **Alimento:** Food\n- **Calorías (por 100g):** XX calorías\n- **Nutrientes destacados:** Proteínas, fibra, hierro, vitamina C\n- **Beneficios para la salud:** Ayuda a fortalecer el sistema inmunológico, favorece la salud intestinal y contribuye a la formación de tejidos musculares.\n- **Dato curioso:** Food es un alimento versátil que se puede incorporar en una amplia variedad de recetas, desde platos dulces hasta salados, lo que lo convierte en una opción popular en muchas culturas culinarias. ¡Atrévete a probarlo de nuevas formas!",
-        "fecha": "2025-09-11 19:50:02",
-        "imagen": "static\\uploads\\20250911194957_Ensalada.jpg"
+        "id": "20250912014339",
+        "usuario": "juan",
+        "alimento": "Salad",
+        "ficha_file": "ficha_20250912014339.txt",
+        "fecha": "2025-09-12 01:43:39",
+        "imagen": "static\\uploads\\20250912014334_Ensalada.jpg"
     },
     {
+        "id": "20250912014558",
         "usuario": "Nombre",
         "alimento": "Salad",
-        "info": "**Alimento:** Salad  \n**Ingredientes estimados:** Lechuga, tomate, pepino, zanahoria.  \n**Calorías (por 100g):** Aprox. 15-20 kcal.  \n**Nutrientes destacados:** Fibra, vitaminas A y C, antioxidantes, minerales como potasio.  \n**Beneficios para la salud:** Promueve la digestión por su contenido en fibra, refuerza el sistema inmunológico gracias a las vitaminas, y contribuye a una piel saludable y vitalidad general.  \n**Dato curioso:** La ensalada se conoce popularmente como un plato ligero y fresco, pero su combinación de ingredientes puede ofrecer una variedad de nutrientes esenciales para el cuerpo. ¡Una manera deliciosa y versátil de nutrirte!",
-        "fecha": "2025-09-11 20:13:02",
-        "imagen": "static\\uploads\\20250911201258_Ensalada.jpg"
+        "ficha_file": "ficha_20250912014558.txt",
+        "fecha": "2025-09-12 01:45:58",
+        "imagen": "static\\uploads\\20250912014553_Ensalada.jpg"
     },
     {
-        "usuario": "Nombre s",
-        "alimento": "Fruit",
-        "info": "**Alimento:** Fruta\n\n**Calorías (por 100g):** Varían según el tipo de fruta, aproximadamente de 30 a 80 kcal.\n\n**Nutrientes destacados:** Las frutas suelen ser ricas en fibra, vitaminas C y K, potasio y antioxidantes.\n\n**Beneficios para la salud:** Consumir frutas regularmente puede ayudar a mantener un sistema inmunológico saludable, mejorar la digestión gracias a su contenido de fibra, y favorecer la salud cardiovascular por su aporte de potasio.\n\n**Dato curioso:** Las frutas de colores intensos, como las bayas o las naranjas, suelen contener altos niveles de antioxidantes beneficiosos para la salud.\n\nRecuerda que elegir una variedad de frutas frescas y de temporada es una excelente manera de disfrutar de sus beneficios nutricionales. ¡Incorpora diferentes colores para obtener una gama completa de nutrientes!",
-        "fecha": "2025-09-11 20:23:08",
-        "imagen": "static\\uploads\\20250911202304_manzana.jpg"
+        "id": "20250912014927",
+        "usuario": "Hans",
+        "alimento": "Salad",
+        "ficha_file": "ficha_20250912014927.txt",
+        "fecha": "2025-09-12 01:49:27",
+        "imagen": "static\\uploads\\20250912014921_Ensalada.jpg"
     },
     {
-        "id": "20250911210531",
-        "usuario": "Edrian",
+        "id": "20250912015618",
+        "usuario": "Pierri",
+        "alimento": "Salad",
+        "ficha_file": "ficha_20250912015618.txt",
+        "fecha": "2025-09-12 01:56:18",
+        "imagen": "static\\uploads\\20250912015611_Ensalada.jpg"
+    },
+    {
+        "id": "20250912020105",
+        "usuario": "Noche",
+        "alimento": "Salad",
+        "ficha_file": "ficha_20250912020105.txt",
+        "fecha": "2025-09-12 02:01:05",
+        "imagen": "static\\uploads\\20250912020058_Ensalada.jpg"
+    },
+    {
+        "id": "20250912111830",
+        "usuario": "Diego",
         "alimento": "Lasagne",
-        "info": "**Alimento:** Lasagne  \n**Ingredientes estimados:** pasta, salsa de tomate, carne picada, queso, especias.  \n**Calorías (por 100g):** Alrededor de 150-200 calorías.  \n**Nutrientes destacados:** Proteínas, carbohidratos, grasas, calcio, hierro.  \n**Beneficios para la salud:** Lasagne proporciona proteínas para la construcción muscular, carbohidratos como fuente de energía, calcio para huesos fuertes, hierro para la oxigenación de células y grasas para funciones corporales.  \n**Dato curioso:** La lasagne, un plato tradicional italiano, se compone de distintas capas de pasta intercaladas con salsas y queso, creando una combinación de sabores y texturas realmente reconfortante. ¡Ideal para compartir en comidas familiares o reuniones especiales!",
-        "fecha": "2025-09-11 21:05:31",
-        "imagen": "static\\uploads\\20250911210525_Lasaña.jpg"
+        "ficha_file": "ficha_20250912111830.txt",
+        "fecha": "2025-09-12 11:18:30",
+        "imagen": "static\\uploads\\20250912111824_Lasaña.jpg"
+    },
+    {
+        "id": "20250912113945",
+        "usuario": "El podrido",
+        "alimento": "Produce",
+        "ficha_file": "ficha_20250912113945.txt",
+        "fecha": "2025-09-12 11:39:45",
+        "imagen": "static\\uploads\\20250912113938_WhatsApp Image 2025-09-12 at 11.39.21 AM.jpeg"
+    },
+    {
+        "id": "20250912114030",
+        "usuario": "Tomaloco",
+        "alimento": "Red",
+        "ficha_file": "ficha_20250912114030.txt",
+        "fecha": "2025-09-12 11:40:30",
+        "imagen": "static\\uploads\\20250912114026_WhatsApp Image 2025-09-12 at 11.39.21 AM (1).jpeg"
+    },
+    {
+        "id": "20250912114246",
+        "usuario": "SUS",
+        "alimento": "Produce",
+        "ficha_file": "ficha_20250912114246.txt",
+        "fecha": "2025-09-12 11:42:46",
+        "imagen": "static\\uploads\\20250912114242_WhatsApp Image 2025-09-12 at 11.42.24 AM.jpeg"
+    },
+    {
+        "id": "20250912122028",
+        "usuario": "Hans",
+        "alimento": "Bisquick",
+        "ficha_file": "ficha_20250912122028.txt",
+        "fecha": "2025-09-12 12:20:28",
+        "imagen": "static\\uploads\\20250912122023_Caja.jpg"
+    },
+    {
+        "id": "20250912122447",
+        "usuario": "Pierri",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250912122447.txt",
+        "fecha": "2025-09-12 12:24:47",
+        "imagen": "static\\uploads\\20250912122443_manzanafea.jpg"
+    },
+    {
+        "id": "20250912122807",
+        "usuario": "Pierri",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250912122807.txt",
+        "fecha": "2025-09-12 12:28:07",
+        "imagen": "static\\uploads\\20250912122801_manzana.jpg"
+    },
+    {
+        "id": "20250912122901",
+        "usuario": "Nombre",
+        "alimento": "Bisquick",
+        "ficha_file": "ficha_20250912122901.txt",
+        "fecha": "2025-09-12 12:29:01",
+        "imagen": "static\\uploads\\20250912122858_Caja.jpg"
+    },
+    {
+        "id": "20250912122953",
+        "usuario": "Lo feo",
+        "alimento": "Produce",
+        "ficha_file": "ficha_20250912122953.txt",
+        "fecha": "2025-09-12 12:29:53",
+        "imagen": "static\\uploads\\20250912122951_manzanafea.jpg"
+    },
+    {
+        "id": "20250912123458",
+        "usuario": "Hans",
+        "alimento": "Produce",
+        "ficha_file": "ficha_20250912123458.txt",
+        "fecha": "2025-09-12 12:34:58",
+        "imagen": "static\\uploads\\20250912123453_manzanafea.jpg"
+    },
+    {
+        "id": "20250912123510",
+        "usuario": "Edrian",
+        "alimento": "Bisquick",
+        "ficha_file": "ficha_20250912123510.txt",
+        "fecha": "2025-09-12 12:35:10",
+        "imagen": "static\\uploads\\20250912123505_Caja.jpg"
+    },
+    {
+        "id": "20250912123618",
+        "usuario": "podrido",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250912123618.txt",
+        "fecha": "2025-09-12 12:36:18",
+        "imagen": "static\\uploads\\20250912123613_manzanafea.jpg"
+    },
+    {
+        "id": "20250918114641",
+        "usuario": "Pierri",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250918114641.txt",
+        "fecha": "2025-09-18 11:46:41",
+        "imagen": "static\\uploads\\20250918114636_manzana.jpg"
+    },
+    {
+        "id": "20250918114749",
+        "usuario": "Hans",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250918114749.txt",
+        "fecha": "2025-09-18 11:47:49",
+        "imagen": "static\\uploads\\20250918114744_manzana.jpg"
+    },
+    {
+        "id": "20250918115043",
+        "usuario": "Nombre Random",
+        "alimento": "Bisquick",
+        "ficha_file": "ficha_20250918115043.txt",
+        "fecha": "2025-09-18 11:50:43",
+        "imagen": "static\\uploads\\20250918115037_Caja.jpg"
+    },
+    {
+        "id": "20250918115622",
+        "usuario": "Pierri",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250918115622.txt",
+        "fecha": "2025-09-18 11:56:22",
+        "imagen": "static\\uploads\\20250918115619_manzana.jpg"
+    },
+    {
+        "id": "20250918115806",
+        "usuario": "Pierri",
+        "alimento": "Fruit",
+        "ficha_file": "ficha_20250918115806.txt",
+        "fecha": "2025-09-18 11:58:06",
+        "imagen": "static\\uploads\\20250918115802_manzana.jpg"
+    },
+    {
+        "id": "20250918120734",
+        "usuario": "Nombre",
+        "alimento": "Lasagne",
+        "ficha_file": "ficha_20250918120734.txt",
+        "fecha": "2025-09-18 12:07:34",
+        "imagen": "static\\uploads\\20250918120728_Lasaña.jpg"
     }
 ]

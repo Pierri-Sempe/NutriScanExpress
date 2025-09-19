@@ -33,5 +33,12 @@
         "alimento": "Lasagne",
         "ficha_file": "ficha_20250919095912.txt",
         "fecha": "2025-09-19 09:59:12"
+    },
+    {
+        "id": "20250919124353",
+        "usuario": "Carnicero",
+        "alimento": "Beef",
+        "ficha_file": "ficha_20250919124353.txt",
+        "fecha": "2025-09-19 12:43:53"
     }
 ]

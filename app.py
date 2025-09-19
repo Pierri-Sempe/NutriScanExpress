@@ -2,7 +2,7 @@ import os
 import json
 from datetime import datetime
 from flask import Flask, request, render_template, jsonify, send_from_directory
-import openai
+from openai import OpenAI
 from google.cloud import vision
 from dotenv import load_dotenv
 import markdown
@@ -20,12 +20,12 @@ os.makedirs(FICHAS_FOLDER, exist_ok=True)
 # Inicializar clientes
 
 # Configurar API key de OpenAI directamente
-openai.api_key = os.getenv('OPENAI_API_KEY')
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 # Google Vision
 google_credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 if google_credentials_path:
-    os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_credentials_path
+    os.environ['GOOGLE_APPLICATION_CREDE+NTIALS'] = google_credentials_path
 else:
     raise EnvironmentError("La variable GOOGLE_APPLICATION_CREDENTIALS no está definida en el entorno.")
 
@@ -136,17 +136,18 @@ def generar_ficha(alimento):
     - Mantén el texto dentro de 150 palabras.
     """
     try:
-        response = openai.chat.completions.create(
-            model='gpt-3.5-turbo',
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
             messages=[
-                {'role': 'system', 'content': 'Eres un experto en nutrición con enfoque educativo.'},
-                {'role': 'user', 'content': prompt}
+                {"role": "system", "content": "Eres un experto en nutrición con enfoque educativo."},
+                {"role": "user", "content": prompt}
             ],
             max_tokens=350
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
-        return f'Error con ChatGPT: {e}'
+        print(f"Error al generar ficha: {e}")
+        return "No se pudo generar la ficha nutricional en este momento."
 
 
 

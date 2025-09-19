@@ -18,7 +18,6 @@ FICHAS_FOLDER = 'fichas'
 os.makedirs(FICHAS_FOLDER, exist_ok=True)
 
 # Inicializar clientes
-
 # Configurar API key de OpenAI directamente
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
@@ -137,7 +136,7 @@ def generar_ficha(alimento):
     - Mantén el texto dentro de 150 palabras.
     """
     try:
-        response = openai.chat.completions.create(
+        response = openai.ChatCompletion.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "Eres un experto en nutrición con enfoque educativo."},

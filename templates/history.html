@@ -72,7 +72,7 @@
 </head>
 <body>
   <header>
-    <h1>📜 Historial de análisis</h1>
+    <h1>Historial de análisis</h1>
   </header>
   <main>
     <table>
@@ -89,13 +89,6 @@
         <td>{{ item.alimento }}</td>
         <td><a href="/descargar/ficha_{{ item.id }}.txt" download>Descargar ficha</a></td>
         <td>{{ item.fecha }}</td>
-        <td>
-          {% if item.imagen %}
-            <img src="{{ url_for('static', filename=item.imagen.split('static/')[-1]) }}" alt="{{ item.alimento }}">
-          {% else %}
-            Sin imagen
-          {% endif %}
-        </td>
       </tr>
       {% endfor %}
     </table>

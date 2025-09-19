@@ -1,9 +1,8 @@
 import os
 import json
 from datetime import datetime
-from flask import Flask, request, render_template, jsonify
-from flask import send_from_directory
-from openai import OpenAI
+from flask import Flask, request, render_template, jsonify, send_from_directory
+import openai
 from google.cloud import vision
 from dotenv import load_dotenv
 import markdown
@@ -20,8 +19,10 @@ os.makedirs(FICHAS_FOLDER, exist_ok=True)
 
 # Inicializar clientes
 
-client_openai = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Configurar API key de OpenAI directamente
+openai.api_key = os.getenv('OPENAI_API_KEY')
 
+# Google Vision
 google_credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 if google_credentials_path:
     os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = google_credentials_path
@@ -30,12 +31,12 @@ else:
 
 client_vision = vision.ImageAnnotatorClient()
 
-
 HISTORIAL_FILE = 'historial.json'
 ALLOWED_EXTENSIONS = {'.png', '.jpg', '.jpeg'}
 
 def allowed_file(filename):
     return os.path.splitext(filename.lower())[1] in ALLOWED_EXTENSIONS
+
 
 def detectar_alimento(imagen_path):
     try:
@@ -45,22 +46,38 @@ def detectar_alimento(imagen_path):
         response = client_vision.label_detection(image=image)
         etiquetas = response.label_annotations
 
-        # Verifica si hay etiquetas relevantes con alta confianza
-        etiquetas_validas = [label for label in etiquetas if label.description in {"Food", "Fruit"} and label.score >= 0.80]
+        if not etiquetas:
+            return "No se detectó alimento"
 
-        if not etiquetas_validas:
-            return None  # No se detectó alimento válido
+        genericos = {"Food", "Dish", "Cuisine", "Ingredient", "Recipe", 
+                     "Produce", "Fruit", "Vegetable", "Natural foods", 
+                     "Staple food", "Meal" , "Yolk"}
 
-        # Filtra etiquetas genéricas
-        ignorar = {"Food", "Dish", "Cuisine", "Ingredient", "Recipe", "Produce"}
-        etiquetas_filtradas = [label.description for label in etiquetas if label.description not in ignorar]
+        colores = {
+            "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
+            "Brown", "Black", "White", "Gray", "Grey", "Beige",
+            "Cyan", "Magenta", "Turquoise", "Teal", "Lavender",
+            "Maroon", "Olive", "Navy", "Gold", "Silver"
+        }
 
-        return etiquetas_filtradas[0] if etiquetas_filtradas else etiquetas[0].description
+        ignorar = genericos.union(colores)
+
+        resultados = []
+        for label in etiquetas:
+            descripcion = label.description
+            score = label.score
+            if descripcion in ignorar:
+                score *= 0.6
+            resultados.append((descripcion, score))
+
+        resultados.sort(key=lambda x: x[1], reverse=True)
+        return resultados[0][0]
+
     except Exception as e:
         return f"Error: {e}"
 
 
-def guardar_registro(usuario, alimento, info, imagen_rel_path):
+def guardar_registro(usuario, alimento, info):
     fecha = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     ficha_id = datetime.now().strftime('%Y%m%d%H%M%S')
     ficha_filename = f"ficha_{ficha_id}.txt"
@@ -74,8 +91,7 @@ def guardar_registro(usuario, alimento, info, imagen_rel_path):
         'usuario': usuario,
         'alimento': alimento,
         'ficha_file': ficha_filename,
-        'fecha': fecha,
-        'imagen': imagen_rel_path
+        'fecha': fecha
     }
 
     try:
@@ -88,7 +104,8 @@ def guardar_registro(usuario, alimento, info, imagen_rel_path):
     with open(HISTORIAL_FILE, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
-    return ficha_filename  # ✅ Retorna el nombre del archivo
+    return ficha_filename
+
 
 def generar_ficha(alimento):
     prompt = f"""
@@ -96,16 +113,16 @@ def generar_ficha(alimento):
     Tu tarea es generar una ficha nutricional breve y clara sobre el alimento "{alimento}" en formato Markdown, destinada a usuarios curiosos que desean aprender sobre nutrición de forma accesible.
 
     Antes de comenzar, determina si el alimento es un platillo compuesto (por ejemplo: ensalada, hamburguesa, pasta, etc.).  
-    Si lo es, incluye una lista estimada de ingredientes comunes que lo componen. Si no lo es, omite esta sección.
+    Si lo es, incluye una lista estimada de ingredientes comunes que lo componen y considera cómo estos influyen en el perfil nutricional. Si no lo es, omite esta sección.
 
-    Si detectas que el alimento esta en muy mal estado, deci si es o no es recomendable ingerir ese mismo alimento.
+    “Si el alimento parece estar en mal estado (por ejemplo, descompuesto, contaminado o deteriorado), indica si sería recomendable evitar su consumo.”
     
     La ficha debe incluir los siguientes apartados, usando ** para negritas:
 
     - **Alimento:** nombre común del alimento  
-    - **Estado:** estado del alimento
+    - **Estado:** Estado del alimento (fresco, procesado, deteriorado, etc.)
     - **Ingredientes estimados:** (solo si es un platillo) lista breve de componentes típicos  
-    - **Calorías (por 100g):** valor aproximado según preparación estándar  
+    - **Calorías (Aporte calórico estimado por cada 100g):** valor aproximado según preparación estándar  
     - **Nutrientes destacados:** lista breve con 3 a 5 componentes clave  
     - **Beneficios para la salud:** 2 a 3 beneficios concretos y comprensibles  
     - **Dato curioso:** una frase interesante o cultural sobre el alimento  
@@ -119,7 +136,7 @@ def generar_ficha(alimento):
     - Mantén el texto dentro de 150 palabras.
     """
     try:
-        response = client_openai.chat.completions.create(
+        response = openai.chat.completions.create(
             model='gpt-3.5-turbo',
             messages=[
                 {'role': 'system', 'content': 'Eres un experto en nutrición con enfoque educativo.'},
@@ -131,9 +148,12 @@ def generar_ficha(alimento):
     except Exception as e:
         return f'Error con ChatGPT: {e}'
 
+
+
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/upload', methods=['POST'])
 def upload():
@@ -149,19 +169,17 @@ def upload():
     filename = f"{datetime.now().strftime('%Y%m%d%H%M%S')}_{imagen.filename}"
     imagen_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
     imagen.save(imagen_path)
-
     alimento = detectar_alimento(imagen_path)
     ficha_raw = generar_ficha(alimento)
     ficha_html = markdown.markdown(ficha_raw)
-    imagen_rel_path = os.path.join('static', 'uploads', filename)
-    ficha_filename = guardar_registro(usuario, alimento, ficha_raw, imagen_rel_path)
+
+    ficha_filename = guardar_registro(usuario, alimento, ficha_raw)
 
     return render_template('result.html',
-                       usuario=usuario,
-                       alimento=alimento,
-                       info=ficha_html,
-                       imagen=imagen_rel_path,
-                       ficha_file=ficha_filename)
+                           usuario=usuario,
+                           alimento=alimento,
+                           info=ficha_html,
+                           ficha_file=ficha_filename)
 
 
 @app.route('/history')
@@ -184,6 +202,7 @@ def history():
 
     return render_template('history.html', historial=data)
 
+
 @app.route('/descargar/<filename>')
 def descargar_ficha(filename):
     try:
@@ -191,6 +210,6 @@ def descargar_ficha(filename):
     except FileNotFoundError:
         return "Archivo no encontrado", 404
 
+
 if __name__ == '__main__':
     app.run(debug=True)
-

@@ -1,0 +1,12 @@
+**Alimento:** Lasagne  
+**Estado:** Plato compuesto  
+
+**Ingredientes estimados:** láminas de pasta de trigo, salsa de tomate, carne picada, queso mozzarella, queso parmesano.  
+
+**Calorías (por 100g):** Aproximadamente 150-200 kcal, dependiendo de la receta y el tamaño de la porción.  
+
+**Nutrientes destacados:** Proteínas, carbohidratos, grasas, calcio, hierro.  
+
+**Beneficios para la salud:** Proporciona proteínas para la construcción muscular, carbohidratos como fuente de energía, calcio para la salud ósea, hierro que ayuda en el transporte de oxígeno, y grasas para la absorción de vitaminas liposolubles.  
+
+**Dato curioso:** La lasaña es un plato tradicional italiano que se remonta a la Edad Media, elaborado con capas de pasta, carne y queso, siendo un icono de la gastronomía italiana en todo el mundo.

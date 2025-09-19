@@ -1,6 +1,0 @@
-**Alimento:** Fruit  
-**Estado:** Fresco  
-**Calorías (por 100g):** Varía según la fruta, en promedio alrededor de 50-70 kcal  
-**Nutrientes destacados:** Vitaminas C y A, fibra, potasio, antioxidantes  
-**Beneficios para la salud:** Ayuda a fortalecer el sistema inmunológico, mejora la digestión y previene enfermedades crónicas como enfermedades del corazón.  
-**Dato curioso:** Las frutas son una excelente opción como snack saludable y se pueden disfrutar en una amplia variedad de colores y sabores, lo que significa diferentes beneficios nutricionales. ¡Atrévete a probar nuevas frutas y explorar sus beneficios para la salud!

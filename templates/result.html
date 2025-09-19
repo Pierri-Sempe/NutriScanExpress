@@ -72,13 +72,12 @@
 </head>
 <body>
   <header>
-    <h1>🥗 Resultado del análisis</h1>
+    <h1>Resultado del análisis</h1>
   </header>
 
   <main>
     <div class="card">
       <h2>{{ alimento }}</h2>
-      <img src="{{ url_for('static', filename=imagen.split('static/')[-1]) }}" alt="{{ alimento }}">
       <div class="info">
         {{ info | safe }}
       </div>
@@ -88,7 +87,7 @@
     <div class="buttons">
       <a href="/" class="button">🔄 Analizar otro alimento</a>
       <a href="/descargar/{{ ficha_file }}" download class="button">⬇ Descargar ficha (.txt)</a>
-      <a href="/history" class="button">📜 Ver historial</a>
+      <a href="/history" class="button">Ver historial</a>
     </div>
   </main>
 

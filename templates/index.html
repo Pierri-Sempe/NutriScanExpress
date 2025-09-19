@@ -23,7 +23,7 @@
   <header><h1>NutriScan Express</h1></header>
 
   <main>
-    <h2>🥗 Analiza tus alimentos de forma rápida y sencilla</h2>
+    <h2>Analiza tus alimentos de forma rápida y sencilla</h2>
 
     <form id="formulario" method="POST" action="/upload" enctype="multipart/form-data">
       <input type="text" name="usuario" placeholder="Tu nombre" required>
@@ -69,7 +69,7 @@
             resultado.innerHTML = `<p style="color:red;">${json.error}</p>`;
           } else {
             resultado.innerHTML = `
-              <h2>🍎 ${json.alimento || ""}</h2>
+              <h2>${json.alimento || ""}</h2>
               <p>${json.info || ""}</p>
               ${json.imagen ? `<img src="${json.imagen}" alt="${json.alimento || 'imagen'}" style="max-width:300px; border-radius:10px;">` : ""}
             `;

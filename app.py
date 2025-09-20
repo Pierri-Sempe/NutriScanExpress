@@ -51,7 +51,7 @@ def detectar_alimento(imagen_path):
 
         genericos = {"Food", "Dish", "Cuisine", "Ingredient", "Recipe", 
                      "Produce", "Fruit", "Vegetable", "Natural foods", 
-                     "Staple food", "Meal" , "Yolk"}
+                     "Staple food", "Meal" , "Yolk", "Nightshade"}
 
         colores = {
             "Red", "Green", "Blue", "Yellow", "Orange", "Purple", "Pink",
@@ -118,7 +118,7 @@ def generar_ficha(alimento):
     “Si el alimento parece estar en mal estado (por ejemplo, descompuesto, contaminado o deteriorado), indica si sería recomendable evitar su consumo.”
     
     La ficha debe incluir los siguientes apartados, usando ** para negritas:
-
+    
     - **Alimento:** nombre común del alimento  
     - **Estado:** Estado del alimento (fresco, procesado, deteriorado, etc.)
     - **Ingredientes estimados:** (solo si es un platillo) lista breve de componentes típicos  
